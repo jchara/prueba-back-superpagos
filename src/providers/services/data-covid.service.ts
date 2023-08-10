@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 
 import { CovidData, Sexo } from "src/shared/interface/covid-data.interface";
+import { DataCovidQueryParams } from "src/shared/interface/data-covid-query.interface";
 
 @Injectable()
 export class DataCovidService {
@@ -30,7 +31,7 @@ export class DataCovidService {
     return data.filter(item => item.sexo === sex);
   }
 
-  public async getBySexAndAge(params) {
+  public async getByFilter(params: DataCovidQueryParams) {
     const { sex, groupAge } = params;
     const data = await this.getAll();
 

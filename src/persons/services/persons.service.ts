@@ -44,8 +44,19 @@ export class PersonsService {
 
   async getByFilter(params: PersonQueryParams): Promise<Person[]> {
     const { sex, state, city } = params;
-    const person = await this.personRepository.findBy({ sexo: sex, estado: state, ciudad_municipio: city });
-    return person;
+    const query = this.personRepository.createQueryBuilder("person");
+    if (sex) {
+      query.andWhere("person.sexo = :sex", { sex });
+    }
+    if (state) {
+      query.andWhere("person.estado = :state", { state });
+    }
+    if (city) {
+      query.andWhere("person.ciudad_municipio = :city", { city });
+    }
+
+    const persons = await query.getMany();
+    return persons;
   }
 
   private async insertDataCovid() {
@@ -55,8 +66,8 @@ export class PersonsService {
   }
 
   @Cron("0 */10 * * * *")
-  handleCron() {
-    this.logger.debug("tarea programada insert data covid");
+  private handleCron() {
+    this.logger.debug("tarea programada inserta data covid");
     this.insertDataCovid();
   }
 }

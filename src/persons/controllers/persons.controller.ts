@@ -18,15 +18,15 @@ export class PersonsController {
     return this.personsService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.personsService.findOne(id);
-  }
-
   @Get("filter")
   getByFilter(@Query() params: PersonQueryParams) {
     return this.personsService.getByFilter(params);
   }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.personsService.findOne(id);
+  } 
 
   @Delete(":id")
   remove(@Param("id") id: string) {
