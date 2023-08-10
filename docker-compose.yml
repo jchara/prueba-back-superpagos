@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  postgres:
+    container_name: superpagos
+    image: postgres
+    environment:
+      - POSTGRES_DB=superpagos
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=admin123
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
