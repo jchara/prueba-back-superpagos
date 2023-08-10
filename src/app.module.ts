@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { ScheduleModule } from "@nestjs/schedule";
 
 import { PersonsModule } from "./persons/persons.module";
 import { ProvidersModule } from "./providers/providers.module";
@@ -12,6 +13,12 @@ const configOptions = {
 };
 
 @Module({
-  imports: [PersonsModule, ProvidersModule, DatabaseModule, ConfigModule.forRoot(configOptions)],
+  imports: [
+    PersonsModule,
+    ProvidersModule,
+    DatabaseModule,
+    ConfigModule.forRoot(configOptions),
+    ScheduleModule.forRoot(),
+  ],
 })
 export class AppModule {}

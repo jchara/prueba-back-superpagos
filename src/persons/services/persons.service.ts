@@ -1,27 +1,62 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Cron } from "@nestjs/schedule";
 
+import { Person } from "../entities/person.entity";
+import { PersonDto } from "../dto/person.dto";
+import { DataCovidService } from "src/providers/services/data-covid.service";
+import { PersonQueryParams } from "src/shared/interface/persons-query-params.interface";
 
 @Injectable()
 export class PersonsService {
-  constructor() {}
+  private readonly logger = new Logger(PersonsService.name);
 
-  create() {
-    return "This action adds a new person";
+  constructor(
+    @InjectRepository(Person) private personRepository: Repository<Person>,
+    private dataCovidService: DataCovidService,
+  ) {}
+
+  async create(data: PersonDto): Promise<Person> {
+    const person = this.personRepository.create(data);
+    return this.personRepository.save(person);
   }
 
-  findAll() {
-    return `This action returns all persons`;
+  findAll(): Promise<Person[]> {
+    return this.personRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} person`;
+  async findOne(id: string): Promise<Person> {
+    const person = await this.personRepository.findOneBy({ id_de_caso: id });
+    if (!person) {
+      throw new NotFoundException(`Person #${id} not found`);
+    }
+    return person;
   }
 
-  update(id: number) {
-    return `This action updates a #${id} person`;
+  async remove(id: string) {
+    const exists = await this.findOne(id);
+    if (!exists) {
+      throw new NotFoundException(`Person #${id} not found`);
+    }
+    return this.personRepository.delete({ id_de_caso: id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} person`;
+  async getByFilter(params: PersonQueryParams): Promise<Person[]> {
+    const { sex, state, city } = params;
+    const person = await this.personRepository.findBy({ sexo: sex, estado: state, ciudad_municipio: city });
+    return person;
+  }
+
+  private async insertDataCovid() {
+    const dataCovid = await this.dataCovidService.getAll();
+    const createData = this.personRepository.create(dataCovid);
+    return this.personRepository.save(createData);
+  }
+
+  @Cron("0 */10 * * * *")
+  handleCron() {
+    this.logger.debug("tarea programada insert data covid");
+    this.insertDataCovid();
   }
 }

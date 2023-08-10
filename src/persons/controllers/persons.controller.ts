@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 
 import { PersonsService } from "src/persons/services/persons.service";
+import { PersonDto } from "../dto/person.dto";
+import { PersonQueryParams } from "src/shared/interface/persons-query-params.interface";
 
 @Controller("persons")
 export class PersonsController {
   constructor(private readonly personsService: PersonsService) {}
 
   @Post()
-  create() {
-    return this.personsService.create();
+  create(@Body() person: PersonDto) {
+    return this.personsService.create(person);
   }
 
   @Get()
@@ -18,16 +20,16 @@ export class PersonsController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.personsService.findOne(+id);
+    return this.personsService.findOne(id);
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string) {
-    return this.personsService.update(+id);
+  @Get("filter")
+  getByFilter(@Query() params: PersonQueryParams) {
+    return this.personsService.getByFilter(params);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.personsService.remove(+id);
+    return this.personsService.remove(id);
   }
 }

@@ -1,24 +1,37 @@
-import { Module, Global } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
+import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { Client } from "pg";
 
 const client = new Client({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DBNAME,
-  password: process.env.POSTGRES_PASSWORD,
-  port: parseInt(process.env.POSTGRES_PORT, 10),
+  user: "root",
+  host: "localhost",
+  database: "superpagos",
+  password: "admin123",
+  port: 5432,
 });
 
 client.connect();
 
+const configTypeOrm: TypeOrmModuleOptions = {
+  type: "postgres",
+  host: "localhost",
+  port: 5432,
+  username: "root",
+  password: "admin123",
+  database: "superpagos",
+  synchronize: true,
+  autoLoadEntities: true,
+};
+
 @Global()
 @Module({
+  imports: [TypeOrmModule.forRoot(configTypeOrm)],
   providers: [
     {
       provide: "PG",
       useValue: client,
     },
   ],
-  exports: ["PG"],
+  exports: ["PG", TypeOrmModule],
 })
 export class DatabaseModule {}

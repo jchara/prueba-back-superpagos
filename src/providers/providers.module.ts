@@ -8,5 +8,6 @@ import { DataCovidService } from "./services/data-covid.service";
   imports: [HttpModule],
   controllers: [DataCovidController],
   providers: [DataCovidService],
+    exports: [DataCovidService],
 })
 export class ProvidersModule {}

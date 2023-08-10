@@ -7,14 +7,14 @@ import {
   TipoRecuperacion,
   Ubicacion,
 } from "src/shared/interface/covid-data.interface";
-import { IsString, IsDate } from "class-validator";
+import { IsString } from "class-validator";
 
 export class PersonDto {
   @IsString()
   readonly id_de_caso: string;
-  @IsDate()
+  @IsString()
   readonly fecha_reporte_web: Date;
-  @IsDate()
+  @IsString()
   readonly fecha_de_notificaci_n: Date;
   @IsString()
   readonly departamento: string;
@@ -38,17 +38,17 @@ export class PersonDto {
   readonly estado: Estado;
   @IsString()
   readonly recuperado: Recuperado;
-  @IsDate()
+  @IsString()
   readonly fecha_inicio_sintomas?: Date;
-  @IsDate()
+  @IsString()
   readonly fecha_diagnostico: Date;
-  @IsDate()
+  @IsString()
   readonly fecha_recuperado?: Date;
   @IsString()
   readonly tipo_recuperacion?: TipoRecuperacion;
   @IsString()
   readonly per_etn_: string;
-  @IsDate()
+  @IsString()
   readonly fecha_muerte?: Date;
   @IsString()
   readonly nom_grupo_?: string;
